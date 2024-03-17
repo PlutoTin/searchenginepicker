@@ -12,12 +12,13 @@
     <form id="searchForm" action="#" class="flex flex-col md:flex-row md:items-center md:justify-center">
       <input type="text" name="q" placeholder="Search for a website" class="w-full md:w-auto md:mr-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
       <select name="search_engine" class="w-full md:w-auto md:mr-4 p-2 border border-gray-300 rounded-lg">
-        <option value="example1">Google</option>
-        <option value="example2">Bing</option>
-        <option value="example3">DuckDuckGo</option>
-        <option value="example4">Yahoo</option>
+        <option value="google">Google</option>
+        <option value="bing">Bing</option>
+        <option value="duckduckgo">DuckDuckGo</option>
+        <option value="yahoo">Yahoo</option>
       </select>
       <button type="submit" class="w-full md:w-auto p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">Search</button>
+      <button type="button" class="w-full md:w-auto p-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none mt-2 md:mt-0" id="addSearchEngineButton">Add Search Engine</button>
     </form>
     <footer class="mt-8 text-center text-gray-500">
       <p>Made with ❤️ by your favorite designer</p>
@@ -33,22 +34,66 @@
       const searchQuery = encodeURIComponent(searchForm.querySelector('input[name="q"]').value);
       const searchEngine = searchForm.querySelector('select[name="search_engine"]').value;
 
+      console.log(`Redirecting to ${searchEngine} with query: ${searchQuery}`);
+
       // Redirect to different URLs based on selected search engine
       switch (searchEngine) {
-        case 'example1':
-          window.location.href = `https://google.com/search?q=${searchQuery}`;
+        case 'google':
+          window.location.href = `https://www.google.com/search?q=${searchQuery}`;
           break;
-        case 'example2':
-          window.location.href = `https://bing.com/search?q=${searchQuery}`;
+        case 'bing':
+          window.location.href = `https://www.bing.com/search?q=${searchQuery}`;
           break;
-        case 'example3':
-          window.location.href = `https://duckduckgo.com/search?q=${searchQuery}`;
+        case 'duckduckgo':
+          window.location.href = `https://duckduckgo.com/?q=${searchQuery}`;
           break;
-        case 'example4':
-          window.location.href = `https://yahoo.com/search?q=${searchQuery}`;
+        case 'yahoo':
+          window.location.href = `https://search.yahoo.com/search?p=${searchQuery}`;
           break;
+        default:
+          // Handle custom search engines
+          const storedSearchEngines = JSON.parse(localStorage.getItem('searchEngines')) || [];
+          const customSearchEngine = storedSearchEngines.find((engine) => engine.name.toLowerCase() === searchEngine);
+
+          if (customSearchEngine) {
+            console.log(`Redirecting to custom search engine: ${customSearchEngine.url}`);
+            window.location.href = customSearchEngine.url.replace('{searchQuery}', searchQuery);
+          } else {
+            console.log('No custom search engine found for:', searchEngine);
+          }
       }
     });
+
+    // Add search engine functionality
+    const addSearchEngineButton = document.getElementById('addSearchEngineButton');
+    const searchEngineSelect = document.querySelector('select[name="search_engine"]');
+
+    addSearchEngineButton.addEventListener('click', () => {
+      const searchEngineName = prompt('Enter the name of the search engine:');
+      const searchEngineURL = prompt('Enter the search URL for this search engine (e.g., https://www.example5.com/search?q=):');
+
+      if (searchEngineName && searchEngineURL) {
+        // Store the new search engine in localStorage
+        const searchEngines = JSON.parse(localStorage.getItem('searchEngines')) || [];
+        searchEngines.push({ name: searchEngineName, url: searchEngineURL });
+        localStorage.setItem('searchEngines', JSON.stringify(searchEngines));
+
+        // Update the dropdown menu with the new search engine
+        const newOption = document.createElement('option');
+        newOption.value = searchEngineName.toLowerCase();
+        newOption.text = searchEngineName;
+        searchEngineSelect.add(newOption);
+      }
+    });
+
+    // Load search engines from localStorage and populate the dropdown menu
+    const storedSearchEngines = JSON.parse(localStorage.getItem('searchEngines')) || [];
+    for (const searchEngine of storedSearchEngines) {
+      const newOption = document.createElement('option');
+      newOption.value = searchEngine.name.toLowerCase();
+      newOption.text = searchEngine.name;
+      searchEngineSelect.add(newOption);
+    }
   </script>
 </body>
 </html>
