@@ -56,8 +56,11 @@
           const customSearchEngine = storedSearchEngines.find((engine) => engine.name.toLowerCase() === searchEngine);
 
           if (customSearchEngine) {
-            console.log(`Redirecting to custom search engine: ${customSearchEngine.url}`);
-            window.location.href = customSearchEngine.url.replace('{searchQuery}', searchQuery);
+            const urlWithPlaceholder = customSearchEngine.url.replace('{searchQuery}', '%s');
+            const url = urlWithPlaceholder.replace('%s', searchQuery);
+
+            console.log(`Redirecting to custom search engine: ${url}`);
+            window.location.href = url;
           } else {
             console.log('No custom search engine found for:', searchEngine);
           }
@@ -94,6 +97,22 @@
       newOption.text = searchEngine.name;
       searchEngineSelect.add(newOption);
     }
+
+    // Validate custom search engine URL
+    searchEngineSelect.addEventListener('change', () => {
+      const selectedSearchEngine = searchEngineSelect.value;
+      const storedSearchEngines = JSON.parse(localStorage.getItem('searchEngines')) || [];
+      const customSearchEngine = storedSearchEngines.find((engine) => engine.name.toLowerCase() === selectedSearchEngine);
+
+      if (customSearchEngine && customSearchEngine.url.includes('{searchQuery}')) {
+        const urlWithPlaceholder = customSearchEngine.url.replace('{searchQuery}', '%s');
+        const url = urlWithPlaceholder.replace('%s', '');
+
+        if (url.includes('%s')) {
+          alert('Custom search engine URL contains more than one %s placeholder. Please correct the URL.');
+        }
+      }
+    });
   </script>
 </body>
 </html>
