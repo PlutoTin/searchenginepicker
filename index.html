@@ -59,8 +59,11 @@
             const urlWithPlaceholder = customSearchEngine.url.replace('{searchQuery}', '%s');
             const url = urlWithPlaceholder.replace('%s', searchQuery);
 
-            console.log(`Redirecting to custom search engine: ${url}`);
-            window.location.href = url;
+            // Remove the %s placeholder from the URL
+            const urlWithoutPlaceholder = url.replace('%s', '');
+
+            console.log(`Redirecting to custom search engine: ${urlWithoutPlaceholder}`);
+            window.location.href = urlWithoutPlaceholder;
           } else {
             console.log('No custom search engine found for:', searchEngine);
           }
