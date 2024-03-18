@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Website Selector</title>
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body.dark {
+      background-color: #1f2937;
+      color: #ffffff;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 font-sans">
   <div class="container mx-auto px-4 py-8">
@@ -22,6 +28,8 @@
       <button type="button" class="w-full md:w-auto p-2 bg-yellow-500 text-gray-800 rounded-lg hover:bg-yellow-600 focus:outline-none mt-2 md:mt-0" id="clearCustomSearchEnginesButton">Clear Custom Search Engines</button>
       <button type="button" class="w-full md:w-auto p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none mt-2 md:mt-0" id="resetCustomSearchEnginesButton">Reset Custom Search Engines</button>
     </form>
+    <button type="button" class="fixed top-4 right-4 p-2 bg-gray-200 rounded-full shadow-md" id="settingsButton"><svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 1 1 13.293 17.293 8 8 0 0 1 17.293 13.293zm-1.586 4.586a2 2 0 0 1-1.586-1.586 2 2 0 0 0 1.586 1.586zm0-6.37a2 2 2 0 1 0-2 2h12a2 2 2 0 1 0 0 2-2zm0 2a2 2 0 1 1 0-2 2h-8a2 2 2 0 1 1 0 2-2z"></svg></button>
+    <button type="button" class="fixed top-4 left-4 p-2 bg-gray-200 rounded-full shadow-md" id="brightnessButton"><svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 1 1 13.293 17.293 8 8 0 0 1 17.293 13.293zm-1.586 4.586a2 2 0 0 1-1.586-1.586 2 2 0 0 0 1.586 1.586zm0-6.37a2 2 2 0 1 0-2 2h12a2 2 2 0 1 0 0 2-2zm0 2a2 2 0 1 1 0-2 2h-8a2 2 2 0 1 1 0 2-2z"></svg></button>
     <footer class="mt-8 text-center text-gray-500">
       <p>Made with ❤️ by your favorite designer</p>
     </footer>
@@ -145,6 +153,13 @@
         searchEngineSelect.add(newOption);
       }
       alert('Custom search engines reset to defaults!');
+    });
+
+    // Toggle dark mode
+    const brightnessButton = document.getElementById('brightnessButton');
+    brightnessButton.addEventListener('click', () => {
+      const body = document.querySelector('body');
+      body.classList.toggle('dark');
     });
   </script>
 </body>
