@@ -10,12 +10,48 @@
       background-color: #1f2937;
       color: #ffffff;
     }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .title {
+      color: #000000;
+    }
+
+    .title.dark {
+      color: #ffffff;
+    }
+
+    .dark-mode-switch {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body class="bg-gray-100 font-sans">
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-gray-800 mb-8">Website Selector</h1>
-    <form id="searchForm" action="#" class="flex flex-col md:flex-row md:items-center md:justify-center">
+    <h1 class="text-4xl font-bold mb-8 title">Website Selector</h1>
+    <form id="searchForm" action="#" class="form-container">
       <input type="text" name="q" placeholder="Search for a website" class="w-full md:w-auto md:mr-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
       <select name="search_engine" class="w-full md:w-auto md:mr-4 p-2 border border-gray-300 rounded-lg">
         <option value="google">Google</option>
@@ -28,15 +64,18 @@
         Open in new tab
       </label>
       <button type="submit" class="w-full md:w-auto p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">Search</button>
+    </form>
+    <div class="button-container">
       <button type="button" class="w-full md:w-auto p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none mt-2 md:mt-0" id="addSearchEngineButton">Add Search Engine</button>
       <button type="button" class="w-full md:w-auto p-2 bg-yellow-500 text-gray-800 rounded-lg hover:bg-yellow-600 focus:outline-none mt-2 md:mt-0" id="clearCustomSearchEnginesButton">Clear Custom Search Engines</button>
       <button type="button" class="w-full md:w-auto p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none mt-2 md:mt-0" id="resetCustomSearchEnginesButton">Reset Custom Search Engines</button>
-    </form>
+    </div>
+    <div class="dark-mode-switch">
+      <button type="button" class="fixed top-4 right-4 p-2 bg-gray-200 rounded-full shadow-md" id="brightnessButton">
+        <svg class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M50 20A40 40 0 1 0 50 70 30 30 0 1 1 50 20z" stroke="black" stroke-width="2" fill="yellow"/></svg>
+      </button>
+    </div>
   </div>
-
-  <button type="button" class="fixed bottom-4 left-4 p-2 bg-gray-200 rounded-full shadow-md" id="brightnessButton">
-    <svg class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M50 20A40 40 0 1 0 50 70 30 30 0 1 1 50 20z" stroke="black" stroke-width="2" fill="yellow"/></svg>
-  </button>
 
   <script>
     // Handle form submission
@@ -181,10 +220,52 @@
 
     // Toggle dark mode
     const brightnessButton = document.getElementById('brightnessButton');
+    const darkModeSwitch = document.getElementById('darkModeSwitch');
+
+    // Set initial dark mode state based on cookie
+    const initialDarkMode = getCookie('darkMode');
+    if (initialDarkMode === 'true') {
+      document.body.classList.add('dark');
+      brightnessButton.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+      brightnessButton.classList.remove('dark');
+    }
+
+    // Toggle dark mode
     brightnessButton.addEventListener('click', () => {
-      const body = document.querySelector('body');
-      body.classList.toggle('dark');
+      if (document.body.classList.contains('dark')) {
+        document.body.classList.remove('dark');
+        brightnessButton.classList.remove('dark');
+        setCookie('darkMode', 'false', 365); // Set cookie to last for 1 day
+      } else {
+        document.body.classList.add('dark');
+        brightnessButton.classList.add('dark');
+        setCookie('darkMode', 'true', 365); // Set cookie to last for 1 day
+      }
     });
+
+    // Set and get cookie functions
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+      }
+      document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
   </script>
 </body>
 </html>
